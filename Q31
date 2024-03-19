@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_LEN 100
+
+// Function to check if a character is a non-terminal
+int isNonTerminal(char ch) {
+    return (ch >= 'A' && ch <= 'Z');
+}
+
+// Function to eliminate left recursion
+void eliminateLeftRecursion(char grammar[][MAX_LEN], int n) {
+    int i, j;
+    char modifiedGrammar[2*n][MAX_LEN];
+
+    for (i = 0; i < n; i++) {
+        char nonTerminal = grammar[i][0];
+        int len = strlen(grammar[i]);
+
+        for (j = 0; j < n; j++) {
+            if (grammar[j][0] == nonTerminal) {
+                // Replace left-recursive productions with modified ones
+                if (grammar[j][3] == nonTerminal) {
+                    strcpy(modifiedGrammar[j], &grammar[j][4]); // Copy rest of the string after the non-terminal
+                    strcat(modifiedGrammar[j], nonTerminal + 1); // Append the new non-terminal
+                } else {
+                    strcpy(modifiedGrammar[j], grammar[j]);
+                }
+            } else {
+                strcpy(modifiedGrammar[j+n], grammar[j]); // Copy original production as it is
+            }
+        }
+    }
+
+    // Print modified grammar
+    printf("Modified Grammar:\n");
+    for (i = 0; i < 2 * n; i++) {
+        printf("%s\n", modifiedGrammar[i]);
+    }
+}
+
+int main() {
+    int n, i;
+    char grammar[MAX_LEN][MAX_LEN];
+
+    printf("Enter the number of productions: ");
+    scanf("%d", &n);
+
+    printf("Enter the grammar (each production on a new line):\n");
+    for (i = 0; i < n; i++) {
+        scanf("%s", grammar[i]);
+    }
+
+    eliminateLeftRecursion(grammar, n);
+
+    return 0;
+}
