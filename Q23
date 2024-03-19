@@ -1,0 +1,43 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+"int"               { printf("Keyword: %s\n", yytext); }
+"void"              { printf("Keyword: %s\n", yytext); }
+"printf"            { printf("Function: %s\n", yytext); }
+"("                 { printf("Left Parenthesis\n"); }
+")"                 { printf("Right Parenthesis\n"); }
+"{"                 { printf("Left Brace\n"); }
+"}"                 { printf("Right Brace\n"); }
+"="                 { printf("Assignment Operator\n"); }
+";"                 { printf("Semicolon\n"); }
+\"[^\"]*\"          { printf("String Literal: %s\n", yytext); }
+[0-9]+              { printf("Integer Literal: %s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*  { printf("Identifier: %s\n", yytext); }
+[\t\n ]+            ; /* ignore whitespace */
+.                   { printf("Unknown Token: %s\n", yytext); }
+
+%%
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <input_file>\n", argv[0]);
+        return 1;
+    }
+    
+    FILE *fp = fopen(argv[1], "r");
+    if (fp == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    yyin = fp;
+
+    yylex();
+
+    fclose(fp);
+
+    return 0;
+}
