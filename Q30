@@ -1,0 +1,21 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%option noyywrap
+
+%%
+{letter}({letter}|{digit})* {
+    printf("Valid identifier: %s\n", yytext);
+}
+. {
+    printf("Invalid identifier: %s\n", yytext);
+}
+%%
+
+int main() {
+    printf("Enter an identifier: ");
+    yylex();
+    return 0;
+}
