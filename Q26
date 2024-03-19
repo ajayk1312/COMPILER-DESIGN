@@ -1,0 +1,30 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%option noyywrap
+
+DIGIT       [0-9]
+LETTER      [a-zA-Z]
+ID          {LETTER}({LETTER}|{DIGIT})*
+CONSTANT    {DIGIT}+(\.{DIGIT}+)?([eE][-+]?{DIGIT}+)?
+OPERATOR    [-+*\/%=><!&|^]+
+
+%%
+"/*"([^*]|\*+[^*/])*\*+"/"       /* Ignore comments */
+[ \t\n]+                         /* Ignore whitespace */
+{ID}                             { printf("Identifier: %s\n", yytext); }
+{CONSTANT}                       { printf("Constant: %s\n", yytext); }
+{OPERATOR}                       { printf("Operator: %s\n", yytext); }
+.                                ;
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    yylex();
+    return 0;
+}
