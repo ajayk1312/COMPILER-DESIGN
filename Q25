@@ -1,0 +1,25 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+word_count() {
+    char word[100];
+    int count = 0;
+    printf("Enter the sentence: ");
+    scanf("%[^\n]%*c", word); // Read the entire line
+    printf("Enter the word to search: ");
+    scanf("%s", word); // Read the word to search for
+    char *ptr = word;
+    while ((ptr = strstr(ptr, yytext)) != NULL) {
+        count++;
+        ptr += strlen(yytext); // Move to the next occurrence
+    }
+    printf("Frequency of the word '%s' in the sentence is: %d\n", yytext, count);
+}
+
+%%
+int main() {
+    word_count();
+    return 0;
+}
