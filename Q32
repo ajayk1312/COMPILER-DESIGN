@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_LEN 100
+
+// Function to check if a character is a non-terminal
+int isNonTerminal(char ch) {
+    return (ch >= 'A' && ch <= 'Z');
+}
+
+// Function to eliminate left factoring
+void eliminateLeftFactoring(char grammar[][MAX_LEN], int n) {
+    int i, j, k;
+    char modifiedGrammar[2*n][MAX_LEN];
+
+    for (i = 0; i < n; i++) {
+        char nonTerminal = grammar[i][0];
+        int len = strlen(grammar[i]);
+
+        // Find longest common prefix for productions of same non-terminal
+        int maxCommonPrefixLen = 0;
+        for (j = 1; j < n; j++) {
+            if (grammar[j][0] == nonTerminal) {
+                int prefixLen = 0;
+                while (prefixLen < len && prefixLen < strlen(grammar[j]) && grammar[i][prefixLen] == grammar[j][prefixLen]) {
+                    prefixLen++;
+                }
+                if (prefixLen > maxCommonPrefixLen) {
+                    maxCommonPrefixLen = prefixLen;
+                }
+            }
+        }
+
+        if (maxCommonPrefixLen > 0) {
+            // Left factoring found, create new non-terminal and modify productions
+            char newNonTerminal = nonTerminal + 1;
+            printf("%c' -> ", nonTerminal);
+            for (k = maxCommonPrefixLen; k < len; k++) {
+                printf("%c", grammar[i][k]);
+            }
+            printf("%c'|\n", newNonTerminal);
+            printf("%c' -> ", nonTerminal);
+            for (j = 1; j < n; j++) {
+                if (grammar[j][0] == nonTerminal && strlen(grammar[j]) > maxCommonPrefixLen) {
+                    printf("%c", grammar[j][maxCommonPrefixLen]);
+                }
+            }
+            printf("\n");
+        } else {
+            // No left factoring found, keep the production as it is
+            printf("%s\n", grammar[i]);
+        }
+    }
+}
+
+int main() {
+    int n, i;
+    char grammar[MAX_LEN][MAX_LEN];
+
+    printf("Enter the number of productions: ");
+    scanf("%d", &n);
+
+    printf("Enter the grammar (each production on a new line):\n");
+    for (i = 0; i < n; i++) {
+        scanf("%s", grammar[i]);
+    }
+
+    eliminateLeftFactoring(grammar, n);
+
+    return 0;
+}
