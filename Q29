@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+%}
+
+%option noyywrap
+
+%%
+[ \t]   { printf("Whitespace character found.\n"); }
+\n      { printf("Newline character found.\n"); }
+.       ; /* Ignore all other characters */
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
