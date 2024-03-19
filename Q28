@@ -1,0 +1,18 @@
+%{
+#include <stdio.h>
+%}
+
+%option noyywrap
+
+%%
+"+"     { printf("Valid operator: +\n"); }
+"-"     { printf("Valid operator: -\n"); }
+"*"     { printf("Valid operator: *\n"); }
+"/"     { printf("Valid operator: /\n"); }
+.       { printf("Invalid operator: %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
