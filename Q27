@@ -1,0 +1,23 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%option noyywrap
+
+%%
+"//".*                         
+{ printf("Single-line comment: %s\n", yytext); }
+"/*"([^*]|\*+[^*/])*\*+"/"     
+{ printf("Multi-line comment: %s\n", yytext); }
+.                                ;
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    yylex();
+    return 0;
+}
